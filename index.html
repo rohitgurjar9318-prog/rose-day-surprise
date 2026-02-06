@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Rose Day Mikku 🌹</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;600&family=Great+Vibes&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --soft-pink: #ffc2d1;
+            --rose-pink: #ff85a1;
+            --deep-rose: #fb6f92;
+            --blush: #ffe5ec;
+            --gold: #ffd700;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--blush), var(--soft-pink), var(--rose-pink));
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #4a0e0e;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Password Overlay */
+        #password-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 194, 209, 0.98);
+            z-index: 1000; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; transition: 0.8s;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            max-width: 90%;
+            width: 400px;
+        }
+
+        input {
+            width: 100%; padding: 12px; margin: 20px 0;
+            border-radius: 25px; border: 2px solid var(--rose-pink);
+            outline: none; text-align: center; font-size: 1.1rem;
+        }
+
+        button {
+            background: var(--deep-rose); color: white; border: none;
+            padding: 12px 30px; border-radius: 25px; cursor: pointer;
+            font-weight: 600; box-shadow: 0 4px 15px rgba(251, 111, 146, 0.4);
+            transition: 0.3s;
+        }
+
+        button:hover { transform: scale(1.05); background: #e05275; }
+
+        /* Sections */
+        .section {
+            display: none; text-align: center; padding: 20px;
+            max-width: 600px; animation: fadeIn 1.5s;
+        }
+
+        .active { display: block !important; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: #b91d47; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.1); }
+        .romantic-text { font-family: 'Great Vibes', cursive; font-size: 2rem; }
+
+        /* Floating Roses Animation */
+        .rose-petal {
+            position: absolute; top: -10%; pointer-events: none;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* Timer */
+        #timer {
+            display: flex; justify-content: center; gap: 15px; margin-top: 20px;
+            font-size: 1.2rem; font-weight: bold; color: #b91d47;
+        }
+        .timer-box { background: rgba(255,255,255,0.4); padding: 10px; border-radius: 10px; min-width: 60px; }
+
+        /* Heartbeat */
+        .heartbeat { animation: heart 1s infinite; font-size: 4rem; margin: 20px; }
+        @keyframes heart {
+            0% { transform: scale(1); }
+            15% { transform: scale(1.2); }
+            30% { transform: scale(1); }
+            45% { transform: scale(1.1); }
+            60% { transform: scale(1); }
+        }
+
+        #no-btn { position: relative; }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        </audio>
+
+    <div id="password-screen">
+        <div class="glass-card">
+            <h2>Sirf Mikku ke liye 💖</h2>
+            <p>Password daalo</p>
+            <input type="password" id="passInput" placeholder="Enter password...">
+            <button onclick="checkPassword()">Enter My Heart</button>
+            <p id="error-msg" style="color: red; margin-top: 10px; display: none;">Oops 😅 Sirf Mikku hi enter kar sakti hai</p>
+        </div>
+    </div>
+
+    <div id="screen1" class="section">
+        <h1>🌹 Happy Rose Day Mikku 🌹</h1>
+        <p>Duggu ki taraf se ek bohot special surprise…</p>
+        <br>
+        <button onclick="nextSection(1, 2)">Start Surprise ❤️</button>
+    </div>
+
+    <div id="screen2" class="section">
+        <div class="glass-card">
+            <h2 class="romantic-text">Mikku, kya aap Duggu ka rose accept karo gi? 🌹💖</h2>
+            <div style="margin-top: 25px;">
+                <button onclick="handleYes()">Yes 😍</button>
+                <button id="no-btn" onmouseover="moveNoButton()" onclick="handleNo()">No 🙈</button>
+            </div>
+            <p id="no-msg" style="margin-top: 20px; display: none; font-size: 0.9rem; color: #b91d47;">
+                Please aisa mat karo Mikku 🥺<br>Duggu ka dil sach me toot jaayega 💔<br>Ek baar phir soch lo na...
+            </p>
+        </div>
+    </div>
+
+    <div id="screen4" class="section">
+        <h1 style="font-size: 4rem;">WOWWW 😍🎉</h1>
+        <h3>Mikku ne Duggu ka rose accept kar liya!!!</h3>
+        <p>Aaj Duggu duniya ka sabse khush insaan hai 💖</p>
+        <br>
+        <button onclick="nextSection(4, 5)">Aage Chalo... 🌹</button>
+    </div>
+
+    <div id="screen5" class="section">
+        <div class="glass-card" style="background: rgba(255,255,255,0.4);">
+            <p style="font-style: italic; font-size: 1.3rem; line-height: 1.6;">
+                "Ek gulab sirf phool nahi hota,<br>
+                meri har saans ka sukoon hota hai.<br>
+                Rose Day par sirf gulab nahi deta Duggu,<br>
+                apna poora dil deta hai Mikku ko 💖🌹"
+            </p>
+        </div>
+        <br>
+        <button onclick="nextSection(5, 6)">Read My Message 💌</button>
+    </div>
+
+    <div id="screen6" class="section">
+        <h1>Mere Liye Tum...</h1>
+        <p style="font-size: 1.2rem; line-height: 1.8;">
+            Mikku, tum wo ehsaas ho jo lafzon mein bayaan nahi hota. Jab tum saath hoti ho, 
+            toh har din Rose Day jaisa lagta hai. Main waada karta hoon ke zindagi ke har mod par, 
+            main tumhara haath thaame rakhunga. Tum sirf meri girlfriend nahi, meri poori duniya ho. 
+            I will always keep you safe and loved. Forever. ❤️
+        </p>
+        <br>
+        <button onclick="nextSection(6, 7)">Wait, There's More ⏳</button>
+    </div>
+
+    <div id="screen7" class="section">
+        <h2>24/2/2026 aane wali hai... 💝</h2>
+        <p>Kya tum jaanti ho us din ek bohot bada surprise hai?</p>
+        <div id="timer">
+            <div class="timer-box"><span id="days">00</span><br>Days</div>
+            <div class="timer-box"><span id="hours">00</span><br>Hrs</div>
+            <div class="timer-box"><span id="mins">00</span><br>Mins</div>
+            <div class="timer-box"><span id="secs">00</span><br>Secs</div>
+        </div>
+        <br><br>
+        <button onclick="nextSection(7, 8)">Last Surprise 🎁</button>
+    </div>
+
+    <div id="screen8" class="section">
+        <div class="heartbeat">❤️</div>
+        <h2 id="final-msg" style="display:none;">Mikku, tum meri zindagi ka sabse khoobsurat rose ho 🌹<br><br>I Love You ❤️ – Duggu</h2>
+        <button id="reveal-btn" onclick="revealFinal()">Click to Feel My Heartbeat</button>
+        <button id="last-next" style="display:none; margin-top: 20px;" onclick="nextSection(8, 9)">Finish ✨</button>
+    </div>
+
+    <div id="screen9" class="section">
+        <h1>I Love You Mikku ❤️</h1>
+        <p class="romantic-text">Happy Rose Day 🌹</p>
+        <hr style="margin: 20px 0; border: 1px solid var(--rose-pink);">
+        <p>Is link ko Instagram story par lagana 💕</p>
+        <h3 style="color: #b91d47;">love-mikku-duggu.com</h3>
+    </div>
+
+    <script>
+        // Password Logic
+        function checkPassword() {
+            const pass = document.getElementById('passInput').value;
+            if(pass === 'mona_rickey') {
+                document.getElementById('password-screen').style.opacity = '0';
+                setTimeout(() => {
+                    document.getElementById('password-screen').style.display = 'none';
+                    document.getElementById('screen1').classList.add('active');
+                    playMusic();
+                    startRoseRain();
+                }, 800);
+            } else {
+                document.getElementById('error-msg').style.display = 'block';
+            }
+        }
+
+        // Section Navigation
+        function nextSection(current, next) {
+            document.getElementById('screen' + current).classList.remove('active');
+            document.getElementById('screen' + next).classList.add('active');
+            if(next === 4) triggerCelebration();
+        }
+
+        // Music Play
+        function playMusic() {
+            const audio = document.getElementById('bgMusic');
+            audio.play().catch(e => console.log("Auto-play blocked, waiting for interaction"));
+        }
+
+        // No Button Logic
+        function moveNoButton() {
+            const btn = document.getElementById('no-btn');
+            const msg = document.getElementById('no-msg');
+            msg.style.display = 'block';
+            btn.style.position = 'absolute';
+            btn.style.left = Math.random() * 80 + '%';
+            btn.style.top = Math.random() * 80 + '%';
+        }
+
+        function handleNo() {
+            alert("Ek baar phir soch lo... Duggu sad ho jayega 🥺");
+        }
+
+        function handleYes() {
+            nextSection(2, 4);
+        }
+
+        // Rose Rain Effect
+        function startRoseRain() {
+            setInterval(() => {
+                const petal = document.createElement('div');
+                petal.innerHTML = ['🌹','💖','🌸','🌹'][Math.floor(Math.random()*4)];
+                petal.classList.add('rose-petal');
+                petal.style.left = Math.random() * 100 + 'vw';
+                petal.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                petal.style.duration = (Math.random() * 3 + 2) + 's';
+                document.body.appendChild(petal);
+                setTimeout(() => petal.remove(), 5000);
+            }, 300);
+        }
+
+        // Confetti
+        function triggerCelebration() {
+            confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 }, colors: ['#ff85a1', '#fb6f92', '#ffffff'] });
+        }
+
+        // Final Reveal
+        function revealFinal() {
+            document.getElementById('reveal-btn').style.display = 'none';
+            document.getElementById('final-msg').style.display = 'block';
+            document.getElementById('last-next').style.display = 'inline-block';
+            document.body.style.background = "black";
+            document.body.style.transition = "2s";
+            triggerCelebration();
+        }
+
+        // Countdown Timer (Feb 24, 2026)
+        const targetDate = new Date("February 24, 2026 00:00:00").getTime();
+        setInterval(() => {
+            const now = new Date().getTime();
+            const diff = targetDate - now;
+            document.getElementById('days').innerText = Math.floor(diff / (1000 * 60 * 60 * 24));
+            document.getElementById('hours').innerText = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('mins').innerText = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('secs').innerText = Math.floor((diff % (1000 * 60)) / 1000);
+        }, 1000);
+
+    </script>
+</body>
+</html>
